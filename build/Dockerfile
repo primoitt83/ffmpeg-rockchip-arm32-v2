@@ -28,7 +28,7 @@ RUN \
 COPY ${PWD}/static /www
 COPY ${PWD}/index.html /www/static 
 COPY ${PWD}/index.html /opt/data 
-COPY ${PWD}/index.html /opt/data/hls
+#COPY ${PWD}/index.html /opt/data/hls
 
 RUN \
     chown nobody:65534 -R /opt/data && \

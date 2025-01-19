@@ -3,6 +3,7 @@
 ## https://github.com/nyanmisaka/ffmpeg-rockchip
 ## This is for arm64 host... no needs libyuv
 
+
 ## Dependencies
 export DEBIAN_FRONTEND=noninteractive
 apt update
@@ -36,6 +37,15 @@ apt install -y \
   libjs-bootstrap \
   checkinstall
 
+## Update cmake
+apt install -y apt-transport-https ca-certificates gnupg software-properties-common wget
+wget --no-check-certificate --retry-on-host-error --retry-on-http-error=429,500,502,503 -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
+apt update
+apt install -y cmake
+## cmake -version
+## cmake version 3.31.3
+
 ## Build MPP
 cd /opt
 git clone -b jellyfin-mpp --depth=1 https://github.com/nyanmisaka/mpp.git rkmpp
@@ -47,7 +57,7 @@ printf '%s\n' '#!/usr/bin/make -f
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/default.mk
 
-ifneq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
+ifneq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE)) 
     export CMAKE_TOOLCHAIN_FILE=/etc/dpkg-cross/cmake/CMakeCross.txt
 endif
 
@@ -134,7 +144,7 @@ cd ffmpeg
 make -j $(nproc)
 make install
 rm /usr/share/ffmpeg/examples/Makefile
-checkinstall -y --deldoc=yes --pkgversion=10:4.2.1 --pkgname=ffmpeg-arm32
+checkinstall -y --deldoc=yes --pkgversion=10:4.2.1 --pkgname=ffmpeg-arm32-v2
 
 ## copy deb files
 mkdir /root/deb
